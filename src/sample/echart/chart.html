@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <!-- 这里是加载刚下好的echarts.js，注意路径 -->
+    <script src="echarts.js"></script>
+    <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 800px;height:500px;"></div>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'), null, {renderer: 'svg'});
+    function init(text,x_coordinate, y_coordinate){
+        let xDataArr = x_coordinate.split(",");
+        let yDataMap = eval("("+y_coordinate+")");
+        let legends = [];
+        let series = [];
+        $.each(yDataMap, function(key, value) {
+            legends.push(key);
+            series.push({
+                name:key,
+                type:'line',
+                stack: '总量',
+                data: value
+            })
+        });
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: text
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: legends
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: xDataArr
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: series
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        // 处理点击事件并且跳转到相应的百度搜索页面
+        myChart.on('click', function (params) {
+            window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+        });
+    }
+
+    function download(){
+        return myChart.getDataURL();
+    }
+</script>
+</body>
+</html>
